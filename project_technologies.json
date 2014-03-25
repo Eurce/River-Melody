@@ -1,13 +1,16 @@
 {
     "technologies": {
+        "languages": [
+            "c++"
+        ],
         "apis": [
-            "insert apis"
+            "Google Map API"
         ],
         "platforms": [
-            "insert platforms"
+            "MAC OS X"
         ],
         "toolkits": [
-            "insert toolkits"
+            "opencv"
         ]
     },
     "themes": [
