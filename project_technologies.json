@@ -1,8 +1,5 @@
 {
     "technologies": {
-        "languages": [
-            "c++"
-        ],
         "apis": [
             "Google Map API"
         ],
@@ -14,6 +11,6 @@
         ]
     },
     "themes": [
-        "insert themes"
+        ""
     ]
 }
