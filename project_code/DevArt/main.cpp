@@ -19,13 +19,14 @@ using namespace std;
 #define river_size 25
 #define MAX_H 1024
 #define MAX_W 1024
-#define pixToUs 100
+#define pixToUs 150
 #define usToFrame 50000
 #define usToFirstKey 10000
-#define usToKey 500000
+#define usToKey 200000
 #define pixR 6
-#define melodySize 32
-#define randomD 40
+#define pianoSize 32
+#define melodySize 96
+#define randomD 50
 
 
 int pixL=pixR*pixR/2;
@@ -61,7 +62,21 @@ bool chk(int x,int y)
     return x>-1&&x<height&&y>-1&&y<width&&b[x][y]&&!c[x][y];
 }
 
-//1235653 3563231 2224354 3123176
+//12356530356323102224354031231760
+//13265430354321701712364034532310
+//34576420312321706712364032312710
+//33455430334523203657643036532310
+//24354650567564203213217072176560
+
+int kV[5][pianoSize]=
+{
+    21,22,23,25,26,25,23,0,23,25,26,23,22,23,21,0,22,22,22,24,23,25,24,0,23,21,22,23,21,27,26,0,
+    21,23,22,26,25,24,23,0,23,25,24,23,22,21,27,0,21,27,21,22,23,26,24,0,23,24,25,23,22,23,21,0,
+    23,24,25,27,26,24,22,0,23,21,22,23,22,21,27,0,26,27,21,22,23,26,24,0,23,22,23,21,22,27,21,0,
+    23,23,24,25,25,24,23,0,23,23,24,25,22,23,22,0,23,26,25,27,26,24,23,0,23,26,25,23,22,23,21,0,
+    22,24,23,25,24,26,25,0,25,26,27,25,26,24,22,0,23,22,21,23,22,21,27,0,27,22,21,27,26,25,26,0
+};
+
 int keyValue[melodySize];
 int kvl;
 
@@ -133,34 +148,16 @@ int bufl[88];
 OSStatus MyEnqueueBuffer(MyData* myData);
 void WaitForFreeBuffer(MyData* myData);
 
+int hs(const char s[])
+{
+    int i,j;
+    for(i=j=0;s[i];i++)
+        j=(j*131+s[i])%10007;
+    return j;
+}
 
 int main(int argc, const char * argv[])
 {
-    int i,j,k,l,x,y;
-    srand(time(NULL));
-    CvScalar cSW;
-    cSW.val[0]=cSW.val[1]=cSW.val[2]=255;
-    CvScalar cSB;
-    cSB.val[0]=cSB.val[1]=cSB.val[2]=0;
-    CvScalar cSG;
-    cSG.val[0]=cSG.val[1]=cSG.val[2]=240;
-    CvScalar cSL;
-    cSL.val[0]=253; cSL.val[1]=242; cSL.val[2]=213;
-    CvScalar cSD;
-    cSD.val[0]=240; cSD.val[1]=208; cSD.val[2]=178;
-    for(i=0;i<88;i++)
-    {
-        char s[10];
-        sprintf(s, "%d.mp3", i);
-        FILE* file=fopen(s, "r");
-        if(!file)
-            continue;
-        bufl[i]=fread(buf[i], 1, bufSize, file);
-    }
-    for(i=0;i<melodySize;i++)
-    {
-        keyValue[i]=21+rand()%7;
-    }
     if(argc==4)
     {
         lo=argv[1];
@@ -172,6 +169,46 @@ int main(int argc, const char * argv[])
         lo="31.5057";
         la="121.3509";
         z="9";
+    }
+    int i,j,k,l,x,y;
+    srand(hs(lo.c_str())*hs(la.c_str())*hs(z.c_str()));
+    CvScalar cSW;
+    cSW.val[0]=cSW.val[1]=cSW.val[2]=255;
+    CvScalar cSB;
+    cSB.val[0]=cSB.val[1]=cSB.val[2]=0;
+    CvScalar cSG;
+    cSG.val[0]=cSG.val[1]=cSG.val[2]=240;
+    CvScalar cSL;
+    cSL.val[0]=253; cSL.val[1]=242; cSL.val[2]=213;
+    CvScalar cSD;
+    cSD.val[0]=217; cSD.val[1]=163; cSD.val[2]=99;
+    for(i=0;i<88;i++)
+    {
+        char s[10];
+        sprintf(s, "%d.mp3", i);
+        FILE* file=fopen(s, "r");
+        if(!file)
+            file=fopen("0.mp3","r");
+        bufl[i]=fread(buf[i], 1, bufSize, file);
+    }
+    for(i=j=0,k=rand()%5;i<melodySize;i++)
+    {
+        if(i%6==0)
+        {
+            keyValue[i]=1;
+        }
+        else if(i%6==3)
+        {
+            keyValue[i]=2;
+        }
+        else if(i%3==1)
+        {
+            keyValue[i]=kV[k][j++];
+        }
+        else if(i%3==2)
+        {
+            keyValue[i]=3;
+        }
     }
     sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
 //    system(sc.c_str());
@@ -223,6 +260,11 @@ int main(int argc, const char * argv[])
     cvDilate(img, img);
     cvDilate(img, img);
     cvErode(img, img);
+    cvErode(img, img);
+    cvErode(img, img);
+    cvErode(img, img);
+    cvDilate(img, img);
+    cvDilate(img, img);
     cvShowImage("River-Melody", img);
     cvWaitKey();
     
@@ -455,15 +497,13 @@ int main(int argc, const char * argv[])
                 }
                 if(kp[j].t==1)
                 {
-                    kp[j].clr.val[0]=240;
-                    kp[j].clr.val[1]=208;
-                    kp[j].clr.val[2]=178;
+                    kp[j].clr=cSD;
                 }
                 else
                 {
-                    kp[j].clr.val[0]+=(240-kp[j].clr.val[0])/6;
-                    kp[j].clr.val[1]+=(208-kp[j].clr.val[1])/6;
-                    kp[j].clr.val[2]+=(178-kp[j].clr.val[2])/6;
+                    kp[j].clr.val[0]+=(cSD.val[0]-kp[j].clr.val[0])/6;
+                    kp[j].clr.val[1]+=(cSD.val[1]-kp[j].clr.val[1])/6;
+                    kp[j].clr.val[2]+=(cSD.val[2]-kp[j].clr.val[2])/6;
                 }
             }
             cvShowImage("River-Melody", img);
