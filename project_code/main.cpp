@@ -15,22 +15,27 @@
 using namespace std;
 
 #define ceps 30
-#define river_size 50
-#define gap 100
+#define teps 0
+#define river_size 25
 #define MAX_H 1024
 #define MAX_W 1024
-#define pixR 10
-#define firstKey 1000
-#define keyGap 1000
+#define pixToMs 2
+#define msToFrame 100
+#define msToFirstKey 1000
+#define msToKey 2000
+#define pixR 5
+#define melodySize 100
 
 string lo,la,z,sc;
 char str[100];
 int width,height;
 int b[MAX_H][MAX_W],c[MAX_H][MAX_W],d[MAX_H][MAX_W];
 int mv[4][2]={-1,0, 1,0, 0,-1, 0,1};
-int ang[4][2];
+int ang[4][2],angl;
 int river_x=-1,river_y=-1;
 int river_xs=-1,river_ys=-1;
+char keyA[MAX_H][MAX_W],keyB[MAX_H][MAX_W];
+int keyC[MAX_H][MAX_W][2];
 
 struct PIX
 {
@@ -41,32 +46,27 @@ int pl;
 
 struct KEYPIX
 {
-    int x,y,t;
+    int x,y,t,pi;
     CvScalar clr;
 }kp[MAX_H*MAX_W];
 
-int kpl;
+int kpi,kpl;
 
 bool chk(int x,int y)
 {
     return x>-1&&x<height&&y>-1&&y<width&&b[x][y]&&!c[x][y];
 }
 
-int keyAdd=0,kb=0;
+int keyValue[melodySize]={};
+int kvl;
 
 void getKey(int &key,int &keyTime)
 {
-    key=21+keyAdd;
-    kb++;
-    if(kb==3)
-    {
-        keyAdd++;
-        kb=0;
-    }
-    keyTime=keyGap;
+    key=21+rand()%7;
+    keyTime=msToKey;
 }
 
-void getClr()
+void getClr(int key)
 {
     kp[kpl].clr.val[0]=rand()%256;
     kp[kpl].clr.val[1]=rand()%256;
@@ -121,7 +121,8 @@ void MyPacketsProc(				void *							inClientData,
                    AudioStreamPacketDescription	*inPacketDescriptions);
 
 const int bufSize=40000;
-char buf[bufSize];
+char buf[88][bufSize];
+int bufl[88];
 
 OSStatus MyEnqueueBuffer(MyData* myData);
 void WaitForFreeBuffer(MyData* myData);
@@ -129,16 +130,27 @@ void WaitForFreeBuffer(MyData* myData);
 
 int main(int argc, const char * argv[])
 {
-    int i,j,k,l,angl,x,y,kpB;
+    int i,j,k,l,x,y;
     srand(time(NULL));
     CvScalar cSW;
     cSW.val[0]=cSW.val[1]=cSW.val[2]=255;
     CvScalar cSB;
     cSB.val[0]=cSB.val[1]=cSB.val[2]=0;
+    CvScalar cSG;
+    cSG.val[0]=cSG.val[1]=cSG.val[2]=240;
     CvScalar cSL;
     cSL.val[0]=253; cSL.val[1]=242; cSL.val[2]=213;
     CvScalar cSD;
     cSD.val[0]=240; cSD.val[1]=208; cSD.val[2]=178;
+    for(i=0;i<88;i++)
+    {
+        char s[10];
+        sprintf(s, "%d.mp3", i);
+        FILE* file=fopen(s, "r");
+        if(!file)
+            continue;
+        bufl[i]=fread(buf[i], 1, bufSize, file);
+    }
     if(argc==4)
     {
         lo=argv[1];
@@ -155,14 +167,33 @@ int main(int argc, const char * argv[])
 //    system(sc.c_str());
     IplImage* img=NULL;
     while(!img)
-        img=cvLoadImage( "catch.png" );
+        img=cvLoadImage( "pearl.png" );
     
     width=img->width;
     height=img->height;
     ang[0][0]=0; ang[0][1]=0; ang[1][0]=height; ang[1][1]=width;
     ang[2][0]=height; ang[2][1]=0; ang[3][0]=0; ang[4][0]=width;
     
-    cvShowImage( "River", img );
+    for(i=pixR;i<height-pixR-1;i+=2*pixR)
+    {
+        for(j=pixR;j<width-pixR-1;j+=2*pixR)
+        {
+            keyA[i][j]=1;
+            for(k=i-pixR;k<=i+pixR;k++)
+            {
+                for(l=j-pixR;l<=j+pixR;l++)
+                {
+                    if(abs(sqrt((k-i)*(k-i)+(l-j)*(l-j)))<pixR)
+                    {
+                        keyC[k][l][0]=i;
+                        keyC[k][l][1]=j;
+                    }
+                }
+            }
+        }
+    }
+    
+    cvShowImage( "River-Melody", img );
     cvWaitKey();
     
     for(i=0;i<height;i++)
@@ -177,12 +208,15 @@ int main(int argc, const char * argv[])
         }
     }
     
-    cvShowImage( "River", img );
+    cvShowImage( "River-Melody", img );
     cvWaitKey();
     cvDilate(img, img);
     cvDilate(img, img);
     cvDilate(img, img);
-    cvShowImage("River", img);
+    cvErode(img, img);
+    cvErode(img, img);
+    cvErode(img, img);
+    cvShowImage("River-Melody", img);
     cvWaitKey();
     
     for(i=0;i<height;i++)
@@ -229,7 +263,7 @@ int main(int argc, const char * argv[])
     }
     if(river_x==-1)
     {
-        puts("No river found!");
+        puts("No river found.");
         return 0;
     }
     printf("River found at (%d,%d).\n",river_x,river_y);
@@ -285,25 +319,39 @@ int main(int argc, const char * argv[])
         }
     }
     
-    cvShowImage("River", img);
-    cvWaitKey(gap);
+    cvShowImage("River-Melody", img);
+    cvWaitKey();
     
     printf("River starts at (%d,%d).\n",river_xs,river_ys);
     
-    int logFrame=0,keyTime=firstKey;
+    int nextFrame=msToFrame;
+    int nextKey=msToFirstKey;
+    int ms=0;
     pl=0;
     memset(c,0,sizeof c);
     c[river_xs][river_ys]=1;
-    pix[pl].x=river_xs;
-    pix[pl].y=river_ys;
-    pl++;
     Q.push(river_xs);
     Q.push(river_ys);
     while(!Q.empty())
     {
         i=Q.front(); Q.pop();
         j=Q.front(); Q.pop();
-        for(l=0;l<8;l++)
+        ms+=pixToMs;
+        pix[pl].x=i;
+        pix[pl].y=j;
+        if(ms>nextFrame)
+        {
+            nextFrame+=msToFrame;
+            pix[pl].frame=1;
+        }
+        if(keyC[i][j][0]&&!keyB[keyC[i][j][0]][keyC[i][j][1]]&&ms>=nextKey)
+        {
+            keyB[keyC[i][j][0]][keyC[i][j][1]]=1;
+            getKey(pix[pl].key,pix[pl].keyTime);
+            nextKey+=pix[pl].keyTime;
+        }
+        pl++;
+        for(l=0;l<15;l++)
         {
             if(l<4)
             {
@@ -317,21 +365,6 @@ int main(int argc, const char * argv[])
             }
             if(chk(x,y))
             {
-                pix[pl].x=x;
-                pix[pl].y=y;
-                logFrame++;
-                if(logFrame>max(200,int(Q.size()/12)))
-                {
-                    logFrame=0;
-                    pix[pl].frame=1;
-                    keyTime-=gap;
-                    if(keyTime<=0)
-                    {
-                        getKey(pix[pl].key,pix[pl].keyTime);
-                        keyTime=pix[pl].keyTime;
-                    }
-                }
-                pl++;
                 c[x][y]=1;
                 Q.push(x);
                 Q.push(y);
@@ -340,20 +373,42 @@ int main(int argc, const char * argv[])
     }
     
     MyData* myData;
-    size_t length;
-    int time;
-    FILE* file;
     
     memset(c,0,sizeof c);
     memset(d,-1,sizeof d);
-    kpl=0;
-    cvShowImage("River", img);
-    cvWaitKey(gap);
+    kpi=kpl=0;
+    ms=0;
+    
+    for(i=0;i<height;i++)
+    {
+        for(j=0;j<width;j++)
+        {
+            if(keyA[i][j])
+            {
+                for(k=i-pixR;k<=i+pixR;k++)
+                {
+                    for(l=j-pixR;l<=j+pixR;l++)
+                    {
+                        if(chk(k,l)&&abs(sqrt((k-i)*(k-i)+(l-j)*(l-j))-pixR)<1)
+                        {
+                            d[k][l]=0x7fffffff;
+                            cvSet2D(img, k, l, cSG);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    cvShowImage("River-Melody", img);
+    cvWaitKey();
+    ms+=msToFrame;
+    nextKey=msToFirstKey;
     for(i=0;i<pl;i++)
     {
-        kpB=0;
         x=pix[i].x;
         y=pix[i].y;
+        ms+=pixToMs;
         if(d[x][y]!=-1&&!pix[i].key)
             continue;
         if(!pix[i].key)
@@ -362,12 +417,24 @@ int main(int argc, const char * argv[])
         }
         else
         {
-            kp[kpl].x=x;
-            kp[kpl].y=y;
-            kp[kpl].t=pix[i].keyTime/gap;
-            getClr();
+            kp[kpl].x=keyC[x][y][0];
+            kp[kpl].y=keyC[x][y][1];
+            kp[kpl].pi=i;
+            kp[kpl].t=pix[i].keyTime/msToFrame;
+            getClr(pix[i].key);
             kpl++;
-            kpB=1;
+        }
+        if(ms>=nextKey&&kpi<kpl)
+        {
+            printf("%d kpi=%d kpl=%d\n",ms-nextKey,kpi,kpl);
+            myData = (MyData*)calloc(1, sizeof(MyData));
+            AudioFileStreamOpen(myData, MyPropertyListenerProc, MyPacketsProc,kAudioFileAAC_ADTSType,
+                                &myData->audioFileStream);
+            AudioFileStreamParseBytes(myData->audioFileStream, bufl[pix[kp[kpi].pi].key],
+                                      buf[pix[i].key], 0);
+            MyEnqueueBuffer(myData);
+            nextKey+=pix[kp[kpi].pi].keyTime;
+            kpi++;
         }
         if(pix[i].frame)
         {
@@ -405,24 +472,8 @@ int main(int argc, const char * argv[])
                     kp[j].clr.val[2]+=(178-kp[j].clr.val[2])/6;
                 }
             }
-            if(kpB)
-            {
-                sprintf(str,"%d.mp3",pix[i].key);
-                puts(str);
-                keyTime=pix[i].keyTime*1000;
-                file=fopen(str,"r");
-                if(!file)
-                    file=fopen("0.mp3","r");
-                memset(buf,0,bufSize);
-                length=fread(buf, 1, bufSize, file);
-                myData = (MyData*)calloc(1, sizeof(MyData));
-                AudioFileStreamOpen(myData, MyPropertyListenerProc, MyPacketsProc,kAudioFileAAC_ADTSType,
-                                    &myData->audioFileStream);
-                AudioFileStreamParseBytes(myData->audioFileStream, length, buf, 0);
-                MyEnqueueBuffer(myData);
-            }
-            cvWaitKey(gap);
-            cvShowImage("River", img);
+            cvShowImage("River-Melody", img);
+            cvWaitKey(msToFrame-teps);
         }
     }
     
@@ -430,12 +481,14 @@ int main(int argc, const char * argv[])
     {
         for(j=0;j<width;j++)
         {
-            if(b[i][j])
+            if(b[i][j]&&d[i][j]<0x7fffffff)
                 cvSet2D(img, i, j, cSD);
         }
     }
     
-    cvShowImage("River", img);
+    printf("kpl=%d\n",kpl);
+    
+    cvShowImage("River-Melody", img);
     cvWaitKey();
     return 0;
 }
@@ -446,6 +499,7 @@ void MyPropertyListenerProc(	void *							inClientData,
                             UInt32 *						ioFlags)
 {
 	// this is called by audio file stream when it finds property values
+    
 	MyData* myData = (MyData*)inClientData;
 	OSStatus err = noErr;
     
@@ -469,28 +523,7 @@ void MyPropertyListenerProc(	void *							inClientData,
 				if (err) { PRINTERROR("AudioQueueAllocateBuffer"); myData->failed = true; break; }
 			}
             
-			// get the cookie size
-			UInt32 cookieSize;
-			Boolean writable;
-			err = AudioFileStreamGetPropertyInfo(inAudioFileStream, kAudioFileStreamProperty_MagicCookieData, &cookieSize, &writable);
-			if (err) { PRINTERROR("info kAudioFileStreamProperty_MagicCookieData"); break; }
-			printf("cookieSize %d\n", (unsigned int)cookieSize);
-            
-			// get the cookie data
-			void* cookieData = calloc(1, cookieSize);
-			err = AudioFileStreamGetProperty(inAudioFileStream, kAudioFileStreamProperty_MagicCookieData, &cookieSize, cookieData);
-			if (err) { PRINTERROR("get kAudioFileStreamProperty_MagicCookieData"); free(cookieData); break; }
-            
-			// set the cookie on the queue.
-			err = AudioQueueSetProperty(myData->audioQueue, kAudioQueueProperty_MagicCookie, cookieData, cookieSize);
-			free(cookieData);
-			if (err) { PRINTERROR("set kAudioQueueProperty_MagicCookie"); break; }
-            
-			// listen for kAudioQueueProperty_IsRunning
-			err = AudioQueueAddPropertyListener(myData->audioQueue, kAudioQueueProperty_IsRunning, MyAudioQueueIsRunningCallback, myData);
-			if (err) { PRINTERROR("AudioQueueAddPropertyListener"); myData->failed = true; break; }
-			
-			break;
+			return;
 		}
 	}
 }
@@ -503,7 +536,6 @@ void MyPacketsProc(				void *							inClientData,
 {
 	// this is called by audio file stream when it finds packets of audio
 	MyData* myData = (MyData*)inClientData;
-	printf("got data.  bytes: %d  packets: %d\n", (unsigned int)inNumberBytes, (unsigned int)inNumberPackets);
     
 	// the following code assumes we're streaming VBR data. for CBR data, you'd need another code branch here.
     
