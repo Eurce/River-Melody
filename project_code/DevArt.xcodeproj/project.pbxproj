@@ -64,6 +64,8 @@
 		83A215DB18DDBD810048F010 /* libopencv_videostab.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 83A215A418DDBD810048F010 /* libopencv_videostab.2.4.8.dylib */; };
 		83A215DC18DDBD810048F010 /* libopencv_videostab.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 83A215A518DDBD810048F010 /* libopencv_videostab.2.4.8.dylib */; };
 		83A215DD18DDBD810048F010 /* libopencv_videostab.2.4.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 83A215A618DDBD810048F010 /* libopencv_videostab.2.4.8.dylib */; };
+		83B6443318E31C850045DF8D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83B6443118E31C850045DF8D /* AudioToolbox.framework */; };
+		83B6443418E31C850045DF8D /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83B6443218E31C850045DF8D /* CoreServices.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -138,6 +140,8 @@
 		83A215A418DDBD810048F010 /* libopencv_videostab.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.8.dylib; path = ../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_videostab.2.4.8.dylib; sourceTree = "<group>"; };
 		83A215A518DDBD810048F010 /* libopencv_videostab.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.8.dylib; path = ../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_videostab.2.4.8.dylib; sourceTree = "<group>"; };
 		83A215A618DDBD810048F010 /* libopencv_videostab.2.4.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.8.dylib; path = ../../../../../usr/local/Cellar/opencv/2.4.8.2/lib/libopencv_videostab.2.4.8.dylib; sourceTree = "<group>"; };
+		83B6443118E31C850045DF8D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AudioToolbox.framework; sourceTree = "<group>"; };
+		83B6443218E31C850045DF8D /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CoreServices.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +160,7 @@
 				83A215B918DDBD810048F010 /* libopencv_highgui.2.4.8.dylib in Frameworks */,
 				83A215C418DDBD810048F010 /* libopencv_ml.2.4.8.dylib in Frameworks */,
 				83A215B518DDBD810048F010 /* libopencv_flann.2.4.8.dylib in Frameworks */,
+				83B6443318E31C850045DF8D /* AudioToolbox.framework in Frameworks */,
 				83A215D118DDBD810048F010 /* libopencv_stitching.2.4.8.dylib in Frameworks */,
 				83A215CD18DDBD810048F010 /* libopencv_ocl.2.4.8.dylib in Frameworks */,
 				83A215DD18DDBD810048F010 /* libopencv_videostab.2.4.8.dylib in Frameworks */,
@@ -166,6 +171,7 @@
 				83A215C318DDBD810048F010 /* libopencv_ml.2.4.8.dylib in Frameworks */,
 				83A215BE18DDBD810048F010 /* libopencv_imgproc.2.4.8.dylib in Frameworks */,
 				83A215B118DDBD810048F010 /* libopencv_features2d.2.4.8.dylib in Frameworks */,
+				83B6443418E31C850045DF8D /* CoreServices.framework in Frameworks */,
 				83A215AB18DDBD810048F010 /* libopencv_contrib.2.4.8.dylib in Frameworks */,
 				83A215C718DDBD810048F010 /* libopencv_nonfree.2.4.8.dylib in Frameworks */,
 				83A215B418DDBD810048F010 /* libopencv_flann.2.4.8.dylib in Frameworks */,
@@ -209,6 +215,8 @@
 		83A2155A18DDBD2C0048F010 = {
 			isa = PBXGroup;
 			children = (
+				83B6443118E31C850045DF8D /* AudioToolbox.framework */,
+				83B6443218E31C850045DF8D /* CoreServices.framework */,
 				83A2156F18DDBD580048F010 /* libs */,
 				83A2156518DDBD2C0048F010 /* DevArt */,
 				83A2156418DDBD2C0048F010 /* Products */,
