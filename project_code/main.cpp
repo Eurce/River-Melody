@@ -19,13 +19,16 @@ using namespace std;
 #define river_size 25
 #define MAX_H 1024
 #define MAX_W 1024
-#define pixToMs 2
-#define msToFrame 100
-#define msToFirstKey 1000
-#define msToKey 2000
-#define pixR 5
-#define melodySize 100
+#define pixToUs 100
+#define usToFrame 50000
+#define usToFirstKey 10000
+#define usToKey 500000
+#define pixR 6
+#define melodySize 32
+#define randomD 40
 
+
+int pixL=pixR*pixR;
 string lo,la,z,sc;
 char str[100];
 int width,height;
@@ -36,10 +39,11 @@ int river_x=-1,river_y=-1;
 int river_xs=-1,river_ys=-1;
 char keyA[MAX_H][MAX_W],keyB[MAX_H][MAX_W];
 int keyC[MAX_H][MAX_W][2];
+IplImage* img=NULL;
 
 struct PIX
 {
-    int x,y,frame,key,keyTime;
+    int x,y,key,keyTime;
 }pix[MAX_H*MAX_W];
 
 int pl;
@@ -57,15 +61,17 @@ bool chk(int x,int y)
     return x>-1&&x<height&&y>-1&&y<width&&b[x][y]&&!c[x][y];
 }
 
-int keyValue[melodySize]={};
+//1235653 3563231 2224354 3123176
+int keyValue[melodySize];
 int kvl;
 
 void getKey(int &key,int &keyTime)
 {
-    key=21+rand()%7;
-    keyTime=msToKey;
+    key=keyValue[kvl++];
+    if(kvl==melodySize)
+        kvl=0;
+    keyTime=usToKey;
 }
-
 void getClr(int key)
 {
     kp[kpl].clr.val[0]=rand()%256;
@@ -151,6 +157,10 @@ int main(int argc, const char * argv[])
             continue;
         bufl[i]=fread(buf[i], 1, bufSize, file);
     }
+    for(i=0;i<melodySize;i++)
+    {
+        keyValue[i]=21+rand()%7;
+    }
     if(argc==4)
     {
         lo=argv[1];
@@ -165,7 +175,6 @@ int main(int argc, const char * argv[])
     }
     sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
 //    system(sc.c_str());
-    IplImage* img=NULL;
     while(!img)
         img=cvLoadImage( "pearl.png" );
     
@@ -213,8 +222,6 @@ int main(int argc, const char * argv[])
     cvDilate(img, img);
     cvDilate(img, img);
     cvDilate(img, img);
-    cvErode(img, img);
-    cvErode(img, img);
     cvErode(img, img);
     cvShowImage("River-Melody", img);
     cvWaitKey();
@@ -324,31 +331,31 @@ int main(int argc, const char * argv[])
     
     printf("River starts at (%d,%d).\n",river_xs,river_ys);
     
-    int nextFrame=msToFrame;
-    int nextKey=msToFirstKey;
-    int ms=0;
+    int nextFrame=usToFrame;
+    int nextKey=usToFirstKey;
+    int us=0;
     pl=0;
     memset(c,0,sizeof c);
     c[river_xs][river_ys]=1;
+    deque<int>DQ;
     Q.push(river_xs);
     Q.push(river_ys);
     while(!Q.empty())
     {
         i=Q.front(); Q.pop();
         j=Q.front(); Q.pop();
-        ms+=pixToMs;
+        us+=pixToUs;
         pix[pl].x=i;
         pix[pl].y=j;
-        if(ms>nextFrame)
+        if(keyC[i][j][0])
         {
-            nextFrame+=msToFrame;
-            pix[pl].frame=1;
-        }
-        if(keyC[i][j][0]&&!keyB[keyC[i][j][0]][keyC[i][j][1]]&&ms>=nextKey)
-        {
-            keyB[keyC[i][j][0]][keyC[i][j][1]]=1;
-            getKey(pix[pl].key,pix[pl].keyTime);
-            nextKey+=pix[pl].keyTime;
+            keyB[keyC[i][j][0]][keyC[i][j][1]]++;
+            if(us>=nextKey&&keyB[keyC[i][j][0]][keyC[i][j][1]]>=pixL)
+            {
+                keyB[keyC[i][j][0]][keyC[i][j][1]]=1;
+                getKey(pix[pl].key,pix[pl].keyTime);
+                nextKey+=pix[pl].keyTime;
+            }
         }
         pl++;
         for(l=0;l<15;l++)
@@ -360,8 +367,8 @@ int main(int argc, const char * argv[])
             }
             else
             {
-                x=i+rand()%50-25;
-                y=j+rand()%50-25;
+                x=i+rand()%randomD-randomD/2;
+                y=j+rand()%randomD-randomD/2;
             }
             if(chk(x,y))
             {
@@ -377,38 +384,26 @@ int main(int argc, const char * argv[])
     memset(c,0,sizeof c);
     memset(d,-1,sizeof d);
     kpi=kpl=0;
-    ms=0;
     
     for(i=0;i<height;i++)
     {
         for(j=0;j<width;j++)
         {
-            if(keyA[i][j])
-            {
-                for(k=i-pixR;k<=i+pixR;k++)
-                {
-                    for(l=j-pixR;l<=j+pixR;l++)
-                    {
-                        if(chk(k,l)&&abs(sqrt((k-i)*(k-i)+(l-j)*(l-j))-pixR)<1)
-                        {
-                            d[k][l]=0x7fffffff;
-                            cvSet2D(img, k, l, cSG);
-                        }
-                    }
-                }
-            }
+            if(!keyC[i][j][0])
+                cvSet2D(img, i, j, cSW);
         }
     }
     
     cvShowImage("River-Melody", img);
     cvWaitKey();
-    ms+=msToFrame;
-    nextKey=msToFirstKey;
+    us=0;
+    nextFrame=usToFrame;
+    nextKey=usToFirstKey;
     for(i=0;i<pl;i++)
     {
         x=pix[i].x;
         y=pix[i].y;
-        ms+=pixToMs;
+        us+=pixToUs;
         if(d[x][y]!=-1&&!pix[i].key)
             continue;
         if(!pix[i].key)
@@ -420,13 +415,12 @@ int main(int argc, const char * argv[])
             kp[kpl].x=keyC[x][y][0];
             kp[kpl].y=keyC[x][y][1];
             kp[kpl].pi=i;
-            kp[kpl].t=pix[i].keyTime/msToFrame;
+            kp[kpl].t=pix[i].keyTime/usToFrame;
             getClr(pix[i].key);
             kpl++;
         }
-        if(ms>=nextKey&&kpi<kpl)
+        if(us>=nextKey&&kpi<kpl)
         {
-            printf("%d kpi=%d kpl=%d\n",ms-nextKey,kpi,kpl);
             myData = (MyData*)calloc(1, sizeof(MyData));
             AudioFileStreamOpen(myData, MyPropertyListenerProc, MyPacketsProc,kAudioFileAAC_ADTSType,
                                 &myData->audioFileStream);
@@ -436,7 +430,7 @@ int main(int argc, const char * argv[])
             nextKey+=pix[kp[kpi].pi].keyTime;
             kpi++;
         }
-        if(pix[i].frame)
+        if(us>=nextFrame)
         {
             for(j=0;j<kpl;j++)
             {
@@ -473,7 +467,8 @@ int main(int argc, const char * argv[])
                 }
             }
             cvShowImage("River-Melody", img);
-            cvWaitKey(msToFrame-teps);
+            cvWaitKey(usToFrame/1000-teps);
+            nextFrame+=usToFrame;
         }
     }
     
@@ -485,8 +480,6 @@ int main(int argc, const char * argv[])
                 cvSet2D(img, i, j, cSD);
         }
     }
-    
-    printf("kpl=%d\n",kpl);
     
     cvShowImage("River-Melody", img);
     cvWaitKey();
