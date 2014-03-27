@@ -1,5 +1,5 @@
 # River Melody
-A project that makes rivers listenable...
+A project that makes river listenable...
 
 ## Authors
 - Yimeng Yu, http://dribbble.com/yimengyu/
@@ -15,7 +15,7 @@ The shape of each river is unique, so is the melody. Thus the characteristics of
 ## Images & Videos
 Sample procedure:
 
-![Example Video](https://www.youtube.com/watch?v=3g1AgqYt0b0 "Example Video")
+https://www.youtube.com/watch?v=3g1AgqYt0b0
 
 1. Download and display the specific google map image according to the given longitude, latitude and Z values:
 ![Example Image](project_images/sample_1.png?raw=true "Example Image")
