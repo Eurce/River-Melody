@@ -6,7 +6,7 @@ River Melody
 - Qian, Luo, github.com/Eurce
 
 ## Description
-
+Pending...
 
 ## Images & Videos
 Sample procedure:
