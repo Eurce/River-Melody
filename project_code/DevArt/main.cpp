@@ -219,7 +219,7 @@ int main(int argc, const char * argv[])
     sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
 //    system(sc.c_str());
     while(!img)
-        img=cvLoadImage( "pearl.png" );
+        img=cvLoadImage( "c.png" );
     
     width=img->width;
     height=img->height;
