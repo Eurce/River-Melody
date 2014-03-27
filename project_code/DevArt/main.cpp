@@ -16,20 +16,21 @@ using namespace std;
 
 #define ceps 30
 #define teps 0
-#define river_size 25
+#define river_size 40
 #define MAX_H 1024
 #define MAX_W 1024
-#define pixToUs 150
+//#define pixToUs 250
+#define pixToUs (min(250,(int)(2000000/(DQ.size()+2))))
 #define usToFrame 50000
 #define usToFirstKey 10000
-#define usToKey 200000
+#define usToKey 800000
 #define pixR 6
 #define pianoSize 32
 #define melodySize 96
 #define randomD 50
 
 
-int pixL=pixR*pixR/2;
+int pixL=pixR*pixR/4;
 string lo,la,z,sc;
 char str[100];
 int width,height;
@@ -44,7 +45,7 @@ IplImage* img=NULL;
 
 struct PIX
 {
-    int x,y,key,keyTime;
+    int x,y,us,key,keyTime;
 }pix[MAX_H*MAX_W];
 
 int pl;
@@ -78,20 +79,21 @@ int kV[5][pianoSize]=
 };
 
 int keyValue[melodySize];
-int kvl;
+int kvl=1;
 
 void getKey(int &key,int &keyTime)
 {
-    key=keyValue[kvl++];
-    if(kvl==melodySize)
-        kvl=0;
+    key=keyValue[kvl];
+    kvl+=3;
+    if(kvl>=melodySize)
+        kvl=1;
     keyTime=usToKey;
 }
 void getClr(int key)
 {
-    kp[kpl].clr.val[0]=rand()%256;
-    kp[kpl].clr.val[1]=rand()%256;
-    kp[kpl].clr.val[2]=rand()%256;
+    kp[kpl].clr.val[0]=192+rand()%64;
+    kp[kpl].clr.val[1]=192+rand()%64;
+    kp[kpl].clr.val[2]=192+rand()%64;
 }
 
 
@@ -166,9 +168,9 @@ int main(int argc, const char * argv[])
     }
     else
     {
-        lo="31.5057";
-        la="121.3509";
-        z="9";
+        lo="22.6983427";
+        la="113.7134584";
+        z="11";
     }
     int i,j,k,l,x,y;
     srand(hs(lo.c_str())*hs(la.c_str())*hs(z.c_str()));
@@ -211,9 +213,9 @@ int main(int argc, const char * argv[])
         }
     }
     sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
-//    system(sc.c_str());
+    system(sc.c_str());
     while(!img)
-        img=cvLoadImage( "pearl.png" );
+        img=cvLoadImage( "catch.png" );
     
     width=img->width;
     height=img->height;
@@ -259,6 +261,7 @@ int main(int argc, const char * argv[])
     cvDilate(img, img);
     cvDilate(img, img);
     cvDilate(img, img);
+    cvErode(img, img);
     cvErode(img, img);
     cvErode(img, img);
     cvErode(img, img);
@@ -368,10 +371,9 @@ int main(int argc, const char * argv[])
         }
     }
     
+    printf("River starts at (%d,%d).\n",river_xs,river_ys);
     cvShowImage("River-Melody", img);
     cvWaitKey();
-    
-    printf("River starts at (%d,%d).\n",river_xs,river_ys);
     
     int nextFrame=usToFrame;
     int nextKey=usToFirstKey;
@@ -380,15 +382,16 @@ int main(int argc, const char * argv[])
     memset(c,0,sizeof c);
     c[river_xs][river_ys]=1;
     deque<int>DQ;
-    Q.push(river_xs);
-    Q.push(river_ys);
-    while(!Q.empty())
+    DQ.push_back(river_xs);
+    DQ.push_back(river_ys);
+    while(!DQ.empty())
     {
-        i=Q.front(); Q.pop();
-        j=Q.front(); Q.pop();
-        us+=pixToUs;
+        i=DQ.front(); DQ.pop_front();
+        j=DQ.front(); DQ.pop_front();
         pix[pl].x=i;
         pix[pl].y=j;
+        pix[pl].us=pixToUs;
+        us+=pix[pl].us;
         if(keyC[i][j][0])
         {
             keyB[keyC[i][j][0]][keyC[i][j][1]]++;
@@ -415,8 +418,16 @@ int main(int argc, const char * argv[])
             if(chk(x,y))
             {
                 c[x][y]=1;
-                Q.push(x);
-                Q.push(y);
+                if(rand()%100)
+                {
+                    DQ.push_back(x);
+                    DQ.push_back(y);
+                }
+                else
+                {
+                    DQ.push_front(y);
+                    DQ.push_front(x);
+                }
             }
         }
     }
@@ -432,7 +443,10 @@ int main(int argc, const char * argv[])
         for(j=0;j<width;j++)
         {
             if(!keyC[i][j][0])
+            {
+                d[i][j]=0x7fffffff;
                 cvSet2D(img, i, j, cSW);
+            }
         }
     }
     
@@ -445,7 +459,7 @@ int main(int argc, const char * argv[])
     {
         x=pix[i].x;
         y=pix[i].y;
-        us+=pixToUs;
+        us+=pix[i].us;
         if(d[x][y]!=-1&&!pix[i].key)
             continue;
         if(!pix[i].key)
