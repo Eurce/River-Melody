@@ -2,7 +2,7 @@
 A project that makes rivers listenable...
 
 ## Authors
-- Yimeng Yu
+- Yimeng Yu, http://dribbble.com/yimengyu/
 - Qian Luo, https://github.com/Eurce/River-Melody/
 
 ## Description
