@@ -33,4 +33,4 @@ Sample procedure:
 ![Example Image](project_images/sample_7.png?raw=true "Example Image")
 
 8. The stream is finished, as well as the melody.
-![Example Image](project_images/sample_7.png?raw=true "Example Image")
+![Example Image](project_images/sample_8.png?raw=true "Example Image")
