@@ -3,7 +3,10 @@ River Melody
 
 ## Authors
 - Yimeng, Yu
-- Qian, Luo, github.com/Eurce
+- Qian, Luo
+
+## GitHub
+https://github.com/Eurce/River-Melody/
 
 ## Description
 Pending...
