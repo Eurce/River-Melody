@@ -1,5 +1,5 @@
 # River Melody
-A project that makes river listenable...
+A project that makes river listenable.
 
 ## Authors
 - Yimeng Yu, http://dribbble.com/yimengyu/
