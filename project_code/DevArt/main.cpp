@@ -20,17 +20,18 @@ using namespace std;
 #define MAX_H 1024
 #define MAX_W 1024
 //#define pixToUs 250
-#define pixToUs (min(250,(int)(2000000/(DQ.size()+2))))
+#define pixToUs (min(400,(int)(2400000/(DQ.size()+2))))
 #define usToFrame 50000
 #define usToFirstKey 10000
-#define usToKey 800000
+#define usToKey 200000
 #define pixR 6
-#define pianoSize 32
-#define melodySize 96
+#define pianoSize 1000
+#define melodySize 1000
 #define randomD 50
 
 
-int pixL=pixR*pixR/4;
+int pixMN=pixR*pixR/2;
+int pixMX=pixR*pixR*2;
 string lo,la,z,sc;
 char str[100];
 int width,height;
@@ -69,7 +70,7 @@ bool chk(int x,int y)
 //33455430334523203657643036532310
 //24354650567564203213217072176560
 
-int kV[5][pianoSize]=
+int kV[pianoSize]=
 {
     21,22,23,25,26,25,23,0,23,25,26,23,22,23,21,0,22,22,22,24,23,25,24,0,23,21,22,23,21,27,26,0,
     21,23,22,26,25,24,23,0,23,25,24,23,22,21,27,0,21,27,21,22,23,26,24,0,23,24,25,23,22,23,21,0,
@@ -95,9 +96,6 @@ void getClr(int key)
     kp[kpl].clr.val[1]=192+rand()%64;
     kp[kpl].clr.val[2]=192+rand()%64;
 }
-
-
-#define PRINTERROR(LABEL)	printf("%s err %4.4s %ld\n", LABEL, (char *)&err, err)
 
 const unsigned int kNumAQBufs = 3;			// number of audio queue buffers we allocate
 const size_t kAQBufSize = 1024 * 1024;		// number of bytes in each audio queue buffer
@@ -205,7 +203,9 @@ int main(int argc, const char * argv[])
         }
         else if(i%3==1)
         {
-            keyValue[i]=kV[k][j++];
+            keyValue[i]=kV[j++];
+            if(j==pianoSize)
+                j=0;
         }
         else if(i%3==2)
         {
@@ -213,7 +213,7 @@ int main(int argc, const char * argv[])
         }
     }
     sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
-    system(sc.c_str());
+//    system(sc.c_str());
     while(!img)
         img=cvLoadImage( "catch.png" );
     
@@ -226,7 +226,6 @@ int main(int argc, const char * argv[])
     {
         for(j=pixR;j<width-pixR-1;j+=2*pixR)
         {
-            keyA[i][j]=1;
             for(k=i-pixR;k<=i+pixR;k++)
             {
                 for(l=j-pixR;l<=j+pixR;l++)
@@ -392,12 +391,13 @@ int main(int argc, const char * argv[])
         pix[pl].y=j;
         pix[pl].us=pixToUs;
         us+=pix[pl].us;
-        if(keyC[i][j][0])
+        if(keyC[i][j][0]&&!keyA[keyC[i][j][0]][keyC[i][j][1]])
         {
             keyB[keyC[i][j][0]][keyC[i][j][1]]++;
-            if(us>=nextKey&&keyB[keyC[i][j][0]][keyC[i][j][1]]>=pixL)
+            if(us>=nextKey&&keyB[keyC[i][j][0]][keyC[i][j][1]]>=pixMN
+               &&keyB[keyC[i][j][0]][keyC[i][j][1]]<=pixMX)
             {
-                keyB[keyC[i][j][0]][keyC[i][j][1]]=1;
+                keyA[keyC[i][j][0]][keyC[i][j][1]]=1;
                 getKey(pix[pl].key,pix[pl].keyTime);
                 nextKey+=pix[pl].keyTime;
             }
