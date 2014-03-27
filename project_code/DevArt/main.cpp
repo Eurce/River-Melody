@@ -20,12 +20,12 @@ using namespace std;
 #define MAX_H 1024
 #define MAX_W 1024
 //#define pixToUs 250
-#define pixToUs (min(400,(int)(2400000/(DQ.size()+2))))
+#define pixToUs (min(400,(int)(3000000/(DQ.size()+2))))
 #define usToFrame 50000
 #define usToFirstKey 10000
 #define usToKey 200000
 #define pixR 6
-#define pianoSize 32
+#define pianoSize 1000
 #define melodySize 1000
 #define randomD 50
 
@@ -70,7 +70,7 @@ bool chk(int x,int y)
 //33455430334523203657643036532310
 //24354650567564203213217072176560
 
-int kV[5][pianoSize]=
+int kV[pianoSize]=
 {
     21,22,23,25,26,25,23,0,23,25,26,23,22,23,21,0,22,22,22,24,23,25,24,0,23,21,22,23,21,27,26,0,
     21,23,22,26,25,24,23,0,23,25,24,23,22,21,27,0,21,27,21,22,23,26,24,0,23,24,25,23,22,23,21,0,
@@ -207,9 +207,7 @@ int main(int argc, const char * argv[])
         }
         else if(i%3==1)
         {
-            keyValue[i]=kV[k][j++];
-            if(j==pianoSize)
-                j=0;
+            keyValue[i]=kV[j++];
         }
         else if(i%3==2)
         {
@@ -219,7 +217,7 @@ int main(int argc, const char * argv[])
     sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
 //    system(sc.c_str());
     while(!img)
-        img=cvLoadImage( "c.png" );
+        img=cvLoadImage( "pearl.png" );
     
     width=img->width;
     height=img->height;

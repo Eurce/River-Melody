@@ -1,10 +1,10 @@
 {
     "technologies": {
         "apis": [
-            "Google Map API"
+            "maps"
         ],
         "platforms": [
-            "MAC OS X"
+            "os x"
         ],
         "toolkits": [
             "opencv"
