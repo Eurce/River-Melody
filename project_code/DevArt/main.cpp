@@ -20,7 +20,7 @@ using namespace std;
 #define MAX_H 1024
 #define MAX_W 1024
 //#define pixToUs 250
-#define pixToUs (min(400,(int)(3000000/(DQ.size()+2))))
+#define pixToUs (min(400,(int)(2450000/(DQ.size()+2))))
 #define usToFrame 50000
 #define usToFirstKey 10000
 #define usToKey 200000
@@ -215,9 +215,9 @@ int main(int argc, const char * argv[])
         }
     }
     sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
-//    system(sc.c_str());
+    system(sc.c_str());
     while(!img)
-        img=cvLoadImage( "pearl.png" );
+        img=cvLoadImage( "catch.png" );
     
     width=img->width;
     height=img->height;
