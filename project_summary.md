@@ -1,5 +1,5 @@
-# Project Title
-River Melody
+# River Melody
+A project that makes our rivers listenable...
 
 ## Authors
 - Yimeng, Yu
