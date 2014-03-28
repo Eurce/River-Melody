@@ -109,7 +109,7 @@ for(i=0;i<height;i++)
 printf("River starts at (%d,%d).\n",river_xs,river_ys);
 ```
 
-After aboved process, the river is reshaped as follows:
+After aboved process, the highlighted river looks like this:
 
 ![Example Image](project_images/sample_4.png?raw=true "Example Image")
 
