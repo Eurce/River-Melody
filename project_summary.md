@@ -33,7 +33,7 @@ https://www.youtube.com/watch?v=5kBMfQlKtno
 5. Pixelize the river region and allocate musical notes, get ready for the melody stream:
 ![Example Image](project_images/sample_5.png?raw=true "Example Image")
 
-6. The stream flows from the upstream to the downstream of the river. The musical pixels will be illuminated and sound up as the stream arrives:
+6. The stream flows from the upstream to the downstream of the river. The musical pixels will be illuminated and sounding up as the stream arrives:
 ![Example Image](project_images/sample_6.png?raw=true "Example Image")
 
 7. The speed of stream flow is maintained at certain level, with the melody of river flowing homogeneously as well:
