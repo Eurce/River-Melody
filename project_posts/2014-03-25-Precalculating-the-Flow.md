@@ -8,7 +8,7 @@ In our project, the traverse order is determined by a search procedure, more spe
 
 3. The search procedure is implemented with deque, which allows low probalbility front push behaviour. That is to say, sometimes DFS is executed temporarily.
 
-The above three points are implemented as follows:
+The above procedure is implemented as follows:
 
 ```
 #define randomD 50
