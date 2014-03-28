@@ -3,7 +3,10 @@ A project that makes river listenable.
 
 ## Authors
 - Yimeng Yu, http://dribbble.com/yimengyu/
-- Qian Luo, https://github.com/Eurce/River-Melody/
+- Qian Luo, http://eurce.me/
+
+## Github
+https://github.com/Eurce/River-Melody/
 
 ## Description
 The nature has its own regulation and sound, therefore we want to redefine the regulation, through setting up rules to recreate the sound of nature. Among all beauties, rivers are an important part of the nature, just like the human meridian, containing various variation and complexity that conceals its reality.
