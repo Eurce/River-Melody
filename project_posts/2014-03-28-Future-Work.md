@@ -1,4 +1,4 @@
-Due to time reasons, his project is not completed finished yet. There are more ideas that having not been implemented in the current project, which includes:
+Due to time reasons, this project hasn't been completely finished yet. There are more ideas that having not been implemented in the current project, which includes:
 
 1. Extracting more features of river for generating melody. (What really characterizes a river?)
 
