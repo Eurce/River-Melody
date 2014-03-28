@@ -15,11 +15,9 @@
 using namespace std;
 
 #define ceps 30
-#define teps 0
 #define river_size 40
 #define MAX_H 1024
 #define MAX_W 1024
-//#define pixToUs 250
 #define pixToUs (min(400,(int)(2450000/(DQ.size()+2))))
 #define usToFrame 50000
 #define usToFirstKey 10000
@@ -515,7 +513,7 @@ int main(int argc, const char * argv[])
                 }
             }
             cvShowImage("River-Melody", img);
-            cvWaitKey(usToFrame/1000-teps);
+            cvWaitKey(usToFrame/1000);
             nextFrame+=usToFrame;
         }
     }

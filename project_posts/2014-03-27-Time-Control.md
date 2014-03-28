@@ -14,7 +14,7 @@ Here's our solution:
 
 3. For precise time controling, we use microsecond.
 
-The following code shows the idea:
+The idea is expressed as follows:
 
 ```
 #define pixToUs (min(400,(int)(2450000/(DQ.size()+2))))
