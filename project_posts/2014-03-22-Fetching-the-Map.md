@@ -5,14 +5,18 @@ For example, if we need a map image that have a center at (22.6983427,113.713458
 ## Example Code
 ```
 string lo,la,z,sc;
-if(argc==4)
+
+int main(int argc, const char * argv[])
 {
-    lo=argv[1];
-    la=argv[2];
-    z=argv[3];
-}
-sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
-system(sc.c_str());
-while(!img)
-    img=cvLoadImage( "catch.png" );
+    if(argc==4)
+    {
+        lo=argv[1];
+        la=argv[2];
+        z=argv[3];
+    }
+    sc="curl -o catch.png \"http://maps.googleapis.com/maps/api/staticmap?center="+lo+","+la+"&zoom="+z+"&size=640x640&maptype=roadmap&sensor=false\"";
+    system(sc.c_str());
+    while(!img)
+        img=cvLoadImage( "catch.png" );
+    ...
 ```
