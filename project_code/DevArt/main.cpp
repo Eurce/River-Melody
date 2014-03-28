@@ -37,7 +37,6 @@ char str[100];
 int width,height;
 int b[MAX_H][MAX_W],c[MAX_H][MAX_W],d[MAX_H][MAX_W];
 int mv[4][2]={-1,0, 1,0, 0,-1, 0,1};
-int ang[4][2],angl;
 int river_x=-1,river_y=-1;
 int river_xs=-1,river_ys=-1;
 char keyA[MAX_H][MAX_W],keyB[MAX_H][MAX_W];
@@ -221,8 +220,6 @@ int main(int argc, const char * argv[])
     
     width=img->width;
     height=img->height;
-    ang[0][0]=0; ang[0][1]=0; ang[1][0]=height; ang[1][1]=width;
-    ang[2][0]=height; ang[2][1]=0; ang[3][0]=0; ang[4][0]=width;
     
     for(i=pixR;i<height-pixR-1;i+=2*pixR)
     {
@@ -321,15 +318,8 @@ int main(int argc, const char * argv[])
     }
     printf("River found at (%d,%d).\n",river_x,river_y);
     
-    for(i=angl=0,k=0x7fffffff;i<4;i++)
-    {
-        j=abs(river_x-ang[i][0])+abs(river_y-ang[i][1]);
-        if(j<k)
-        {
-            k=j;
-            angl=i^1;
-        }
-    }
+    int dia_rx=height-river_x-river_size;
+    int dia_ry=width-river_y-river_size;
     
     k=0x7fffffff;
     memset(c,0,sizeof c);
@@ -348,9 +338,9 @@ int main(int argc, const char * argv[])
             if(chk(x,y))
             {
                 cvSet2D(img, x, y, cSL);
-                if(abs(x-ang[angl][0])+abs(y-ang[angl][1])<k)
+                if(abs(x-dia_rx)+abs(y-dia_ry)<k)
                 {
-                    k=abs(x-ang[angl][0])+abs(y-ang[angl][1]);
+                    k=abs(x-dia_rx)+abs(y-dia_ry);
                     river_xs=x;
                     river_ys=y;
                 }
