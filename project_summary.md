@@ -36,7 +36,7 @@ https://www.youtube.com/watch?v=5kBMfQlKtno
 6. The stream flows from the upstream to the downstream of the river. The musical pixels will be illuminated and sounding up as the stream arrives:
 ![Example Image](project_images/sample_6.png?raw=true "Example Image")
 
-7. The speed of stream flow is maintained at certain level, with the melody of river flowing homogeneously as well:
+7. The speed of stream flow is maintained at certain level, with the melody of river flowing uniformly as well:
 ![Example Image](project_images/sample_7.png?raw=true "Example Image")
 
 8. The stream is finished, as well as the melody.
