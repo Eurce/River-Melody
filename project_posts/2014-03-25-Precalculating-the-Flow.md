@@ -1,4 +1,4 @@
-As a river contains lots of pixels, and the process of flowing is basically an process of sequential pixel traversal, thus it's rather important to determine the traverse order of pixels.
+As a river contains lots of pixels, and the process of flowing is basically an process of sequential pixel traversal, thus it's rather important to determine the traversal order of each pixel.
 
 In our project, the traverse order is determined by a search procedure, more specifically, a modified BFS. In order to best simulate the river flow, random traversal is applied. The traversal is divided into three parts:
 
