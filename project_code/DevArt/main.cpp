@@ -126,8 +126,6 @@ struct MyData
 
 MyData* myData;
 
-typedef struct MyData MyData;
-
 int  MyConnectSocket();
 
 void MyAudioQueueOutputCallback(void* inClientData, AudioQueueRef inAQ, AudioQueueBufferRef inBuffer);
