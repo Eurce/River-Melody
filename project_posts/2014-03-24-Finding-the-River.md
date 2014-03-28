@@ -6,7 +6,7 @@ Before searching for the river, let's make some hypotheses:
 
 3. The upstream side locates at the diagonal position of the downstream side.
 
-4. The pixels belonged to the same river are all 4-connected.
+4. The pixels belonge to the same river are all 4-connected.
 
 Based on the above hypotheses, we could build up the process for river searching.
 
