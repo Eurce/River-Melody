@@ -69,6 +69,7 @@ bool chk(int x,int y)
 
 //53312242333126664555344551444655332211342345566756453221
 
+//sample melody
 int kV[pianoSize]=
 {
     21,22,23,25,26,25,23,0,23,25,26,23,22,23,21,0,22,22,22,24,23,25,24,0,23,21,22,23,21,27,26,0,
@@ -209,7 +210,11 @@ int main(int argc, const char * argv[])
         }
         else if(i%3==1)
         {
-            keyValue[i]=kV[j++];
+            j++;
+            if(j%8==0)
+                keyValue[i]=0;
+            else
+                keyValue[i]=21+rand()%7;
         }
         else if(i%3==2)
         {
