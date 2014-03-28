@@ -181,9 +181,7 @@ int main(int argc, const char * argv[])
     cSG.val[0]=cSG.val[1]=cSG.val[2]=240;
     CvScalar cSL;
     cSL.val[0]=253; cSL.val[1]=242; cSL.val[2]=213;
-//    cSL.val[0]=219; cSL.val[1]=202; cSL.val[2]=128;
     CvScalar cSD;
-//    cSD.val[0]=151; cSD.val[1]=79; cSD.val[2]=16;
     cSD.val[0]=217; cSD.val[1]=163; cSD.val[2]=99;
     CvScalar cSY;
     cSY.val[0]=222; cSY.val[1]=242; cSY.val[2]=194;
