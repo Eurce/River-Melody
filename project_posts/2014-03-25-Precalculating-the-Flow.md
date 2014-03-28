@@ -2,7 +2,7 @@ As a river contains lots of pixels, and the process of flowing is basically a pr
 
 In our project, the traverse order is determined by a search procedure, more specifically, a modified BFS. In order to best simulate the river flow, random traversal is applied. The traversal is divided into three parts:
 
-1. BFS to all 4-connected adjacent pixelx.
+1. BFS to all 4-connected adjacent pixels.
 
 2. BFS to 12 pixels that have a distance randomly from 1 to 50.
 
