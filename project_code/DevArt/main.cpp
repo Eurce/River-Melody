@@ -41,6 +41,12 @@ char keyA[MAX_H][MAX_W],keyB[MAX_H][MAX_W];
 int keyC[MAX_H][MAX_W][2];
 IplImage* img=NULL;
 
+CvScalar cSW;
+CvScalar cSB;
+CvScalar cSG;
+CvScalar cSL;
+CvScalar cSD;
+
 struct PIX
 {
     int x,y,us,key,keyTime;
@@ -51,7 +57,7 @@ int pl;
 struct KEYPIX
 {
     int x,y,t,pi;
-    CvScalar clr;
+    CvScalar clri,clrt;
 }kp[MAX_H*MAX_W];
 
 int kpi,kpl;
@@ -93,9 +99,10 @@ void getKey(int &key,int &keyTime)
 
 void getClr(int key)
 {
-    kp[kpl].clr.val[0]=192+rand()%64;
-    kp[kpl].clr.val[1]=192+rand()%64;
-    kp[kpl].clr.val[2]=192+rand()%64;
+    kp[kpl].clri=cSW;
+    kp[kpl].clrt.val[0]=192+rand()%64;
+    kp[kpl].clrt.val[1]=192+rand()%64;
+    kp[kpl].clrt.val[2]=192+rand()%64;
 }
 
 const unsigned int kNumAQBufs = 3;			// number of audio queue buffers we allocate
@@ -173,18 +180,11 @@ int main(int argc, const char * argv[])
     }
     int i,j,k,l,x,y;
     srand(hs(lo.c_str())*hs(la.c_str())*hs(z.c_str()));
-    CvScalar cSW;
     cSW.val[0]=cSW.val[1]=cSW.val[2]=255;
-    CvScalar cSB;
     cSB.val[0]=cSB.val[1]=cSB.val[2]=0;
-    CvScalar cSG;
     cSG.val[0]=cSG.val[1]=cSG.val[2]=240;
-    CvScalar cSL;
     cSL.val[0]=253; cSL.val[1]=242; cSL.val[2]=213;
-    CvScalar cSD;
     cSD.val[0]=217; cSD.val[1]=163; cSD.val[2]=99;
-    CvScalar cSY;
-    cSY.val[0]=222; cSY.val[1]=242; cSY.val[2]=194;
     for(i=0;i<88;i++)
     {
         char s[10];
@@ -500,35 +500,18 @@ int main(int argc, const char * argv[])
                         if(d[k][l]>j)
                             continue;
                         d[k][l]=j;
-                        cvSet2D(img, k, l, kp[j].clr);
+                        cvSet2D(img, k, l, kp[j].clri);
                     }
                 }
-                if(kp[j].t==1)
-                {
-                    kp[j].clr=cSD;
-                }
-                else
-                {
-                    kp[j].clr.val[0]+=(cSD.val[0]-kp[j].clr.val[0])/6;
-                    kp[j].clr.val[1]+=(cSD.val[1]-kp[j].clr.val[1])/6;
-                    kp[j].clr.val[2]+=(cSD.val[2]-kp[j].clr.val[2])/6;
-                }
+                kp[j].clri.val[0]+=(kp[j].clrt.val[0]-kp[j].clri.val[0])/6;
+                kp[j].clri.val[1]+=(kp[j].clrt.val[1]-kp[j].clri.val[1])/6;
+                kp[j].clri.val[2]+=(kp[j].clrt.val[2]-kp[j].clri.val[2])/6;
             }
             cvShowImage("River-Melody", img);
             cvWaitKey(usToFrame/1000);
             nextFrame+=usToFrame;
         }
     }
-    
-    for(i=0;i<height;i++)
-    {
-        for(j=0;j<width;j++)
-        {
-            if(b[i][j]&&d[i][j]<0x7fffffff)
-                cvSet2D(img, i, j, cSD);
-        }
-    }
-    
     cvShowImage("River-Melody", img);
     cvWaitKey();
     return 0;
