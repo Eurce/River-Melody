@@ -2,9 +2,9 @@ As a river contains lots of pixels, and the process of flowing is basically an p
 
 In our project, the traverse order is determined by a search procedure, more specifically, a modified BFS. In order to best simulate the river flow, random traversal is applied. The traversal is divided into three parts:
 
-1. BFS to 4-connected adjacent pixel.
+1. BFS to all 4-connected adjacent pixelx.
 
-2. BFS to pixels that have a distance randomly among 1 to 50.
+2. BFS to 12 pixels that have a distance randomly from 1 to 50.
 
 3. As the search procedure is implemented with deque, which allows low probalbility front push behaviour. That is to say, sometimes DFS is executed temporarily.
 
