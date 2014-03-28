@@ -12,7 +12,7 @@ Here's our solution:
 
 2. Then we could set up the time gap between two adjacent frames and notes separately. As soon as enough pixels have been flowed over, the next frame or note will come up.
 
-3. For precise time controling, we use microsecond.
+3. For precise time controlling, we use microsecond.
 
 The idea is expressed as follows:
 
