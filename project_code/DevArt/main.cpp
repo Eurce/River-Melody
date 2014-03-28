@@ -89,6 +89,7 @@ void getKey(int &key,int &keyTime)
         kvl=1;
     keyTime=usToKey;
 }
+
 void getClr(int key)
 {
     kp[kpl].clr.val[0]=192+rand()%64;

@@ -6,9 +6,7 @@ A project that makes river listenable.
 - Qian Luo, https://github.com/Eurce/River-Melody/
 
 ## Description
-The nature has its own regulation and sound, therefore we want to redefine the regulation, through setting up rules to recreate the sound of nature. As rivers are an important part of the nature, just like the human meridian, contain various variation and complexity that concealing its reality.
-
-The river image could be obtained through google map and thus be fitted into the pixelized coordinate. Severl regions of the coordinate are allocated with musical notes. As the river flows by, those regions will be activated and the note will sound up. Eventually, the river flow creates its own melody.
+The nature has its own regulation and sound, therefore we want to redefine the regulation, through setting up rules to recreate the sound of nature. Among all beauties, rivers are an important part of the nature, just like the human meridian, containing various variation and complexity that conceals its reality.
 
 The shape of each river is unique, so is the melody. Thus the characteristics of each river could be revealed in the form of music. The allocated musical notes are defined by the river characteristics. All we have done is to set up a group of rules, which define how to translate river into melody. With the combination of visual river flow and auditory melody, a new language is born.
 
