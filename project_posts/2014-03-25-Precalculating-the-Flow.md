@@ -6,7 +6,7 @@ In our project, the traverse order is determined by a search procedure, more spe
 
 2. BFS to 12 random pixels that have a distance ranging from 1 to 50.
 
-3. As the search procedure is implemented with deque, which allows low probalbility front push behaviour. That is to say, sometimes DFS is executed temporarily.
+3. The search procedure is implemented with deque, which allows low probalbility front push behaviour. That is to say, sometimes DFS is executed temporarily.
 
 The above three points are implemented as follows:
 
