@@ -4,7 +4,7 @@ In our project, the traverse order is determined by a search procedure, more spe
 
 1. BFS to all 4-connected adjacent pixels.
 
-2. BFS to 12 pixels that have a distance randomly from 1 to 50.
+2. BFS to 12 random pixels that have a distance ranging from 1 to 50.
 
 3. As the search procedure is implemented with deque, which allows low probalbility front push behaviour. That is to say, sometimes DFS is executed temporarily.
 
