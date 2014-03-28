@@ -124,6 +124,8 @@ struct MyData
 	pthread_cond_t done;			// a condition varable for handling the inuse flags
 };
 
+MyData* myData;
+
 typedef struct MyData MyData;
 
 int  MyConnectSocket();
@@ -425,8 +427,6 @@ int main(int argc, const char * argv[])
             }
         }
     }
-    
-    MyData* myData;
     
     memset(c,0,sizeof c);
     memset(d,-1,sizeof d);
