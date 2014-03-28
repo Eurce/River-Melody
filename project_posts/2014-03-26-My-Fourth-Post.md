@@ -1,1 +1,0 @@
-Process sample is uploaded.
